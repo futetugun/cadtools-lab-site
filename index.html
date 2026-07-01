@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAD Tools Lab | AutoCAD業務効率化プラグイン</title>
+  <meta name="description" content="AutoCAD図面作業を効率化する小型プラグイン群。文字変換、属性処理、図面チェック、社内CADルール対応のカスタム開発に対応します。">
+  <style>
+    :root {
+      --bg: #f4f7f8;
+      --panel: #ffffff;
+      --ink: #172026;
+      --muted: #62717c;
+      --line: #d7e0e5;
+      --navy: #123047;
+      --blue: #1e6b8f;
+      --cyan: #28a0a8;
+      --slate: #23313a;
+      --soft: #eaf2f4;
+      --ok: #1e7d5b;
+      --shadow: 0 18px 44px rgba(18, 48, 71, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 4%, rgba(40, 160, 168, .12), transparent 28rem),
+        radial-gradient(circle at 92% 10%, rgba(30, 107, 143, .10), transparent 30rem),
+        linear-gradient(180deg, #f9fbfc 0%, var(--bg) 100%);
+      font-family: "Yu Gothic", "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", sans-serif;
+      line-height: 1.75;
+    }
+
+    a { color: inherit; }
+    .shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(249, 251, 252, .88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-inner {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+    .mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      border-radius: 12px;
+      font-size: 12px;
+      box-shadow: 0 10px 24px rgba(18, 48, 71, .18);
+    }
+    .brand-text {
+      display: grid;
+      gap: 1px;
+      line-height: 1.2;
+    }
+    .brand-parent {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .brand-product {
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 900;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      border: 1px solid rgba(30, 107, 143, .16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: 0 12px 30px rgba(18, 48, 71, .08);
+      font-size: 14px;
+    }
+    nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 800;
+      transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+    }
+    nav a:hover {
+      color: var(--navy);
+      background: var(--soft);
+    }
+    nav a.nav-cta {
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      box-shadow: 0 10px 22px rgba(30, 107, 143, .22);
+    }
+    nav a.nav-cta:hover {
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.03fr .97fr;
+      gap: 44px;
+      align-items: center;
+      padding: 76px 0 72px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .eyebrow:before {
+      content: "";
+      width: 38px;
+      height: 2px;
+      background: var(--cyan);
+    }
+    h1 {
+      margin: 16px 0 18px;
+      font-size: clamp(38px, 5.8vw, 76px);
+      line-height: 1.06;
+      letter-spacing: -.05em;
+    }
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(28px, 3.6vw, 48px);
+      line-height: 1.18;
+      letter-spacing: -.035em;
+    }
+    h3 { margin: 0 0 8px; line-height: 1.42; }
+    p { margin: 0 0 16px; }
+    .lead {
+      max-width: 720px;
+      color: #34444d;
+      font-size: clamp(17px, 2vw, 22px);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 11px 17px;
+      border: 1px solid var(--navy);
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      background: white;
+      color: var(--navy);
+    }
+    .button.primary {
+      color: white;
+      background: var(--navy);
+    }
+    .button:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+
+    .visual {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .visual img { display: block; width: 100%; height: auto; }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .badge {
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: white;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    section {
+      padding: 72px 0;
+      border-top: 1px solid var(--line);
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: .82fr 1.18fr;
+      gap: 28px;
+      align-items: start;
+      margin-bottom: 28px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .card {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgba(18, 48, 71, .06);
+    }
+    .product-card {
+      min-height: 245px;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+    }
+    .status {
+      display: inline-flex;
+      width: fit-content;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .status.ready {
+      background: rgba(30, 125, 91, .1);
+      color: var(--ok);
+    }
+    .list {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .list li {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 9px;
+      color: #33434c;
+    }
+    .list li:before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-top: 10px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .sample {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #12212b;
+      color: #f4fbfd;
+      font-family: Consolas, "Yu Gothic", monospace;
+    }
+    .sample-head {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.08);
+      color: #b9cbd4;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .sample-body {
+      min-height: 170px;
+      padding: 18px;
+      font-size: clamp(16px, 2vw, 22px);
+      white-space: pre-wrap;
+    }
+    .accent { color: #7ce0e5; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      counter-reset: step;
+    }
+    .step {
+      position: relative;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      counter-increment: step;
+    }
+    .step:before {
+      content: "0" counter(step);
+      display: inline-grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      color: white;
+      background: var(--blue);
+      font-weight: 800;
+    }
+
+    .video-row {
+      display: grid;
+      grid-template-columns: 1.16fr .84fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .video-box {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #10202a;
+      box-shadow: var(--shadow);
+    }
+    video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #10202a;
+    }
+    .note {
+      padding: 14px 16px;
+      border-left: 4px solid var(--cyan);
+      background: var(--soft);
+      border-radius: 10px;
+      color: #34444d;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(18, 48, 71, .06);
+    }
+    th, td {
+      padding: 14px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--soft); color: var(--navy); }
+
+    .contact {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 26px;
+      align-items: start;
+    }
+    .contact-box {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      box-shadow: var(--shadow);
+    }
+    .contact-line {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .contact-line:last-child { border-bottom: 0; }
+    .label { color: var(--muted); }
+
+    footer {
+      padding: 36px 0 54px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .legal-note {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #70808a;
+      line-height: 1.7;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(215, 224, 229, .95);
+      background: rgba(255, 255, 255, .78);
+      text-decoration: none;
+      color: var(--navy);
+      font-weight: 700;
+      font-size: .92rem;
+    }
+
+    @media (max-width: 900px) {
+      .header-inner { align-items: flex-start; flex-direction: column; padding: 14px 0; }
+      nav { flex-wrap: wrap; }
+      .hero,
+      .section-head,
+      .grid-3,
+      .grid-2,
+      .compare,
+      .steps,
+      .video-row,
+      .contact { grid-template-columns: 1fr; }
+      .hero { padding-top: 48px; }
+      .visual, .video-box, .contact-box { box-shadow: 0 12px 30px rgba(18,48,71,.10); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="Top">
+        <span class="mark">EN</span>
+        <span class="brand-text">
+          <span class="brand-parent">ELE-NOVA</span>
+          <span class="brand-product">CAD Tools Lab</span>
+        </span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#products">製品</a>
+        <a href="#sample">サンプル</a>
+        <a href="#workflow">導入</a>
+        <a href="#custom">定制開発</a>
+        <a class="nav-cta" href="#contact">相談する</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div>
+        <span class="eyebrow">AutoCAD Productivity Plugins</span>
+        <h1>CAD図面作業を、小さなプラグインで確実に短縮。</h1>
+        <p class="lead">文字修正、属性処理、図面チェック、社内CADルール対応。建築設備設計の現場で繰り返し発生する作業を、軽量なAutoCAD向けプラグインとして整理します。</p>
+        <div class="actions">
+          <a class="button primary" href="#products">製品機能を見る</a>
+          <a class="button" href="#contact">会社版・定制開発を相談</a>
+        </div>
+        <div class="badges">
+          <span class="badge">AutoCAD向け</span>
+          <span class="badge">AutoLISP中心</span>
+          <span class="badge">会社版ライセンス対応</span>
+          <span class="badge">日本語図面運用を想定</span>
+        </div>
+      </div>
+      <div class="visual">
+        <img src="assets/hero-dashboard.svg" alt="CAD Tools Lab のプラグイン機能イメージ">
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Products</span>
+            <h2>今ある機能と、追加予定のプラグイン。</h2>
+          </div>
+          <p class="lead">最初の実験対象は文字変換プラグインです。今後は同じ販売・ライセンス・検証フローで、別のCAD補助プラグインを追加できます。</p>
+        </div>
+        <div class="grid-3">
+          <article class="card product-card">
+            <span class="status ready">検証済み</span>
+            <h3>Text Cleanup</h3>
+            <p>図面内の全角数字、全角英字、括弧、半角カタカナを選択範囲だけ変換します。</p>
+            <ul class="list">
+              <li>注記・設備表記の揺れを整理</li>
+              <li>TEXT、MTEXT、属性文字を対象</li>
+              <li>会社版ライセンスに対応</li>
+            </ul>
+          </article>
+          <article class="card product-card">
+            <span class="status">追加予定</span>
+            <h3>Attribute Tools</h3>
+            <p>ブロック属性、機器番号、盤名称、図面内の定型文字をまとめて確認・修正するツール群。</p>
+            <ul class="list">
+              <li>ブロック属性の抽出</li>
+              <li>社内ルールに沿った表記チェック</li>
+              <li>設備図面向けの一括修正</li>
+            </ul>
+          </article>
+          <article class="card product-card">
+            <span class="status">追加予定</span>
+            <h3>Drawing Check</h3>
+            <p>図面提出前の文字、画層、尺度、注記ルールを確認する軽量チェックツール。</p>
+            <ul class="list">
+              <li>提出前チェックの省力化</li>
+              <li>チェックリストの自動化</li>
+              <li>会社ごとのCAD基準に対応</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="sample">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Example</span>
+            <h2>何をするプラグインか、すぐ分かる表示。</h2>
+          </div>
+          <p class="lead">製品ページでは、専門用語よりも「変換前」「変換後」を前面に出します。担当者が一目で用途を判断できる構成です。</p>
+        </div>
+        <div class="compare">
+          <div class="sample">
+            <div class="sample-head"><span>Before</span><span>図面注記</span></div>
+            <div class="sample-body"><span class="accent">ＡＢＣ１２３（テスト）</span>
+盤ＮＯ．１２（１Ｆ）
+ｶﾝｷﾌｧﾝ（ＥＦ－１）</div>
+          </div>
+          <div class="sample">
+            <div class="sample-head"><span>After</span><span>Plugin result</span></div>
+            <div class="sample-body"><span class="accent">ABC123(テスト)</span>
+盤NO.12(1F)
+カンキファン(EF-1)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Workflow</span>
+            <h2>導入は短く、確認は明確に。</h2>
+          </div>
+          <p class="lead">小さなプラグインでも、会社で使う場合は配布、ライセンス、検証ログが必要です。導入手順を固定し、顧客側の不安を減らします。</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <h3>読み込み</h3>
+            <p>AutoCADにプラグインを読み込みます。</p>
+          </div>
+          <div class="step">
+            <h3>ライセンス設定</h3>
+            <p>発行された会社版コードを設定します。</p>
+          </div>
+          <div class="step">
+            <h3>状態確認</h3>
+            <p>製品名、有効期限、端末情報、キーを確認します。</p>
+          </div>
+          <div class="step">
+            <h3>実行</h3>
+            <p>対象を選択し、必要な処理だけ実行します。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo">
+      <div class="shell video-row">
+        <div class="video-box">
+          <video controls preload="metadata" poster="assets/demo-poster.svg">
+            <source src="assets/plugin-demo.mp4" type="video/mp4">
+            お使いのブラウザは動画表示に対応していません。
+          </video>
+        </div>
+        <div>
+          <span class="eyebrow">Demo</span>
+          <h2>動画は60秒以内で、機能だけを見せる。</h2>
+          <p>ページには動画枠を用意しています。実際のAutoCAD操作を録画し、<strong>assets/plugin-demo.mp4</strong> として配置すれば、そのまま再生できます。</p>
+          <div class="note">推奨構成: 読み込み → ライセンス確認 → 対象選択 → 実行 → 変換結果。説明より画面を見せる方が早いです。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="custom">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Custom Development</span>
+            <h2>会社ごとのCADルールに合わせて拡張。</h2>
+          </div>
+          <p class="lead">単品プラグイン販売だけでなく、社内ルールに合わせた定制開発を提案できます。小さな機能から始め、業務改善の入口にします。</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>対応できる相談</h3>
+            <ul class="list">
+              <li>図面内文字の表記統一</li>
+              <li>ブロック属性の一括処理</li>
+              <li>提出前チェックの自動化</li>
+              <li>設備設計向けCAD補助ツール</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>販売形態</h3>
+            <table>
+              <tr><th>形態</th><th>内容</th></tr>
+              <tr><td>会社版</td><td>社内利用向けのライセンス発行</td></tr>
+              <tr><td>試用版</td><td>期間または回数を制限した検証用</td></tr>
+              <tr><td>定制開発</td><td>会社ルールに合わせた追加開発</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="shell contact">
+        <div>
+          <span class="eyebrow">Contact</span>
+          <h2>会社版・定制開発の相談。</h2>
+          <p class="lead">問い合わせ時は、AutoCADの利用環境、対象図面、困っている作業、希望する処理内容をお知らせください。</p>
+        </div>
+        <div class="contact-box">
+          <div class="contact-line">
+            <span class="label">連絡先</span>
+            <span><a href="mailto:ele-nova@cadtools-lab.com">ele-nova@cadtools-lab.com</a></span>
+          </div>
+          <div class="contact-line">
+            <span class="label">販売名</span>
+            <span>CAD Tools Lab</span>
+          </div>
+          <div class="contact-line">
+            <span class="label">対象</span>
+            <span>AutoCAD向け業務効率化プラグイン</span>
+          </div>
+          <div class="contact-line">
+            <span class="label">相談内容</span>
+            <span>会社版、試用版、追加プラグイン、定制開発</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <div>ELE-NOVA / CAD Tools Lab. AutoCAD向け業務効率化プラグイン。各プラグインは顧客環境での検証後に導入する想定です。</div>
+      <div class="footer-links">
+        <a href="terms.html">利用規約</a>
+        <a href="license.html">ライセンス条件</a>
+        <a href="privacy.html">プライバシーポリシー</a>
+        <a href="contact.html">お問い合わせ</a>
+        <a href="tokutei.html">特定商取引法に基づく表記</a>
+      </div>
+      <div class="legal-note">CAD Tools Lab は独立した製品ラインです。Autodesk および AutoCAD は Autodesk, Inc. の商標または登録商標であり、本サイトおよび製品は Autodesk の公式製品・提携製品ではありません。</div>
+    </div>
+  </footer>
+</body>
+</html>

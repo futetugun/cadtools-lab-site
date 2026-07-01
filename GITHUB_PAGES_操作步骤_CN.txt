@@ -1,0 +1,46 @@
+GitHub Pages 实际操作步骤
+日期: 2026-07-01
+
+一、创建仓库
+1. 登录 GitHub
+2. 点击 New repository
+3. Repository name 建议:
+   cadtools-lab-site
+4. 选择 Public
+5. 点击 Create repository
+
+二、上传网站文件
+1. 进入新仓库
+2. 点击 Add file -> Upload files
+3. 把 github_pages_publish_20260701 文件夹里的全部文件拖进去
+4. 等待上传完成
+5. 点击 Commit changes
+
+三、开启 GitHub Pages
+1. 进入 Settings
+2. 左侧点击 Pages
+3. Build and deployment:
+   - Source: Deploy from a branch
+4. Branch:
+   - main
+   - /(root)
+5. 保存
+6. 等待几分钟
+
+四、确认 Pages 地址
+1. GitHub 会给你一个默认地址，通常形如:
+   https://你的用户名.github.io/仓库名/
+2. 如果仓库根目录已有 CNAME 文件，GitHub 会识别自定义域名:
+   cadtools-lab.com
+
+五、等待 HTTPS
+1. 先不要着急
+2. 等 DNS 生效后，GitHub Pages 页面通常会自动申请证书
+3. 看到 Enforce HTTPS 可选时，再勾选
+
+六、上线后核对
+1. https://cadtools-lab.com 是否能打开
+2. 首页是否正常
+3. terms.html / privacy.html / contact.html 是否正常
+4. 图片是否显示
+5. 手机端是否可读

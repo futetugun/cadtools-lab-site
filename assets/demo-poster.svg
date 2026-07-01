@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">CAD Tools Lab demo video poster</title>
+  <desc id="desc">Placeholder poster for AutoCAD plugin demo video</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#12212b"/>
+      <stop offset=".55" stop-color="#123047"/>
+      <stop offset="1" stop-color="#28a0a8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <g opacity=".22" stroke="#d7e0e5" stroke-width="1">
+    <path d="M120 100h1040M120 180h1040M120 260h1040M120 340h1040M120 420h1040M120 500h1040M120 580h1040"/>
+    <path d="M160 70v580M300 70v580M440 70v580M580 70v580M720 70v580M860 70v580M1000 70v580M1140 70v580"/>
+  </g>
+  <rect x="118" y="118" width="1044" height="484" rx="28" fill="#101b18" opacity=".82"/>
+  <text x="178" y="214" fill="#f4fbfd" font-family="Yu Gothic, sans-serif" font-size="44" font-weight="700">CAD Plugin Demo</text>
+  <text x="178" y="282" fill="#bfeaf0" font-family="Consolas, monospace" font-size="34">ＡＢＣ１２３（テスト）  →  ABC123(テスト)</text>
+  <text x="178" y="350" fill="#bfeaf0" font-family="Consolas, monospace" font-size="34">ｶﾝｷﾌｧﾝ（ＥＦ－１）    →  カンキファン(EF-1)</text>
+  <circle cx="640" cy="470" r="64" fill="#1e6b8f"/>
+  <path d="M622 434l74 36-74 36z" fill="#f4fbfd"/>
+  <text x="640" y="576" fill="#f4fbfd" text-anchor="middle" font-family="Yu Gothic, sans-serif" font-size="24">Load → Check → Select → Run</text>
+</svg>
