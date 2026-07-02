@@ -526,7 +526,7 @@
           <article class="card product-card">
             <span class="status live">検証済み</span>
             <h3>Text Cleanup</h3>
-            <p>図面内の全角数字、全角英字、括弧、半角カタカナを選択範囲だけ変換します。</p>
+            <p>図面内の全角英数字を半角へ、半角カタカナを全角へ整理します。括弧の混在整理にも対応し、選択範囲だけ処理できます。</p>
             <ul class="feature-list">
               <li>注記・設備表記の揺れを整理</li>
               <li>TEXT、MTEXT、属性文字を対象</li>
@@ -573,39 +573,39 @@
             <div class="sample-panel">
               <header>
                 <span>Before</span>
-                <span>図面注記</span>
+                <span>設備・建築・機械図面</span>
               </header>
-              <div class="sample-text">ＡＢＣ１２３（テスト）
-盤ＮＯ．１２（１Ｆ）
-ｶﾝｷﾌｧﾝ（ＥＦ－１）</div>
+              <div class="sample-text">分電盤Ａ－１０２（ＥＰＳ）
+給気ﾌｧﾝ（ＳＡ－１）　３φ４Ｗ
+点検口（６００×６００）　機器記号：ＶＡＶ－０１</div>
             </div>
             <div class="sample-panel">
               <header>
                 <span>After</span>
                 <span>Plugin Result</span>
               </header>
-              <div class="sample-text after">ABC123(テスト)
-盤NO.12(1F)
-カンキファン(EF-1)</div>
+              <div class="sample-text after">分電盤A-102(EPS)
+給気ファン(SA-1)　3φ4W
+点検口(600×600)　機器記号: VAV-01</div>
             </div>
           </div>
           <div class="grid-2">
             <div class="card">
-              <h3>この最初のプラグインでできること</h3>
+              <h3>現在の標準ルール</h3>
               <ul class="check-list">
                 <li>全角数字を半角へ変換</li>
                 <li>全角英字を半角へ変換</li>
-                <li>括弧の全角/半角を整理</li>
+                <li>括弧の混在状態を整理</li>
                 <li>半角カタカナを全角へ統一</li>
               </ul>
             </div>
             <div class="card">
-              <h3>会社で使う時に必要な前提</h3>
+              <h3>会社ごとに調整できること</h3>
               <ul class="check-list">
-                <li>試用版と会社版を分けて管理</li>
-                <li>問い合わせ窓口を固定</li>
-                <li>導入前に対象環境を確認</li>
-                <li>追加仕様は別見積に分離</li>
+                <li>全角 → 半角 / 半角 → 全角の方向調整</li>
+                <li>部署ごとの表記基準に合わせた設定</li>
+                <li>導入前に対象環境と対象文字を確認</li>
+                <li>追加仕様は別見積で個別対応</li>
               </ul>
             </div>
           </div>
@@ -675,6 +675,50 @@
             <div class="step-no">04</div>
             <h3>実行</h3>
             <p>対象を選択し、必要な処理だけ実行します。</p>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:18px;">
+          <div class="card">
+            <h3>ロード・ライセンス状態の表示例</h3>
+            <table class="table">
+              <tr>
+                <th>APPLOAD</th>
+                <td>Loaded</td>
+              </tr>
+              <tr>
+                <th>CTSETCODE</th>
+                <td>License code saved</td>
+              </tr>
+              <tr>
+                <th>CTL</th>
+                <td>CheckProduct / CheckExpire / CheckMachine = OK</td>
+              </tr>
+              <tr>
+                <th>Mode</th>
+                <td>Company license active</td>
+              </tr>
+            </table>
+          </div>
+          <div class="card">
+            <h3>実行結果の表示例</h3>
+            <table class="table">
+              <tr>
+                <th>対象</th>
+                <td>TEXT / MTEXT / 属性文字 / マルチ引出線</td>
+              </tr>
+              <tr>
+                <th>処理方向</th>
+                <td>英数字: 全角→半角 / ｶﾀｶﾅ: 半角→全角</td>
+              </tr>
+              <tr>
+                <th>結果</th>
+                <td>Changed: 12 / Unchanged: 3 / Failed: 0</td>
+              </tr>
+              <tr>
+                <th>備考</th>
+                <td>顧客ルールに応じて変換方向を個別調整可能</td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
