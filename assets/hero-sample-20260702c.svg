@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="760" viewBox="0 0 980 760" role="img" aria-labelledby="title desc">
+  <title id="title">CAD Tools Lab sample result illustration</title>
+  <desc id="desc">Sample result and rule summary for Text Cleanup</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#123047"/>
+      <stop offset="1" stop-color="#18242c"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eaf2f4"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="18" dy="18" stdDeviation="0" flood-color="#123047" flood-opacity=".16"/>
+    </filter>
+  </defs>
+
+  <rect width="980" height="760" rx="28" fill="#f4f7f8"/>
+  <rect x="54" y="54" width="872" height="652" rx="22" fill="url(#bg)"/>
+  <g opacity=".24" stroke="#9db7c4" stroke-width="1">
+    <path d="M120 160h740M120 240h740M120 320h740M120 400h740M120 480h740M120 560h740"/>
+    <path d="M180 110v520M300 110v520M420 110v520M540 110v520M660 110v520M780 110v520"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="108" y="108" width="764" height="132" rx="18" fill="url(#card)"/>
+    <text x="146" y="152" font-family="Yu Gothic, sans-serif" font-size="20" font-weight="700" fill="#6f8594">Sample result</text>
+    <text x="146" y="192" font-family="Consolas, monospace" font-size="22" fill="#17211d">Before: 分電盤Ａ－１０２（ＥＰＳ）  給気ﾌｧﾝ（ＳＡ－１）  ３φ４Ｗ</text>
+    <text x="146" y="226" font-family="Consolas, monospace" font-size="22" fill="#1e6b8f">After : 分電盤A-102(EPS)  給気ファン(SA-1)  3φ4W</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="130" y="290" width="332" height="228" rx="18" fill="#fff9ec" opacity=".98"/>
+    <text x="164" y="334" font-family="Yu Gothic, sans-serif" font-size="24" font-weight="700" fill="#17211d">Current rule</text>
+    <g font-family="Yu Gothic, sans-serif" font-size="20" fill="#17211d">
+      <rect x="164" y="364" width="22" height="22" rx="4" fill="#28a0a8"/><text x="202" y="384">英数字: 全角 → 半角</text>
+      <rect x="164" y="410" width="22" height="22" rx="4" fill="#28a0a8"/><text x="202" y="430">括弧: 混在状態を整理</text>
+      <rect x="164" y="456" width="22" height="22" rx="4" fill="#28a0a8"/><text x="202" y="476">ｶﾀｶﾅ: 半角 → 全角</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="506" y="290" width="346" height="228" rx="18" fill="#fff9ec" opacity=".98"/>
+    <text x="540" y="334" font-family="Yu Gothic, sans-serif" font-size="24" font-weight="700" fill="#17211d">For company use</text>
+    <g font-family="Yu Gothic, sans-serif" font-size="19" fill="#17211d">
+      <text x="540" y="378">・会社ルールに合わせて方向調整可</text>
+      <text x="540" y="418">・対象文字と対象図面を事前確認</text>
+      <text x="540" y="458">・追加仕様は別見積で個別対応</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="130" y="560" width="722" height="92" rx="18" fill="#112734" stroke="#2b5267" stroke-width="2"/>
+    <text x="166" y="602" font-family="Yu Gothic, sans-serif" font-size="20" font-weight="700" fill="#7fd2dc">Home page policy</text>
+    <text x="166" y="632" font-family="Yu Gothic, sans-serif" font-size="19" fill="#dfeaf0">ホームでは結果と標準ルールだけを表示し、詳しいコマンド説明は個別ページへ分離。</text>
+  </g>
+</svg>
